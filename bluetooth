@@ -1,0 +1,36 @@
+int const LIGHT=13; 
+void setup() {
+ 
+  pinMode(LIGHT,OUTPUT);
+Serial.begin(9600);/digitalWrite(LIGHT,HIGH);
+delay(1000);// waits for a second
+digitalWrite(LIGHT,LOW);
+Serial.println("connection OK");
+
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+   int incomingByte = Serial.read();
+
+  switch (incomingByte){
+  
+   case 'L':
+    digitalWrite(LIGHT,HIGH);
+Serial.println("LIGHT ON");
+  break;
+   case 'M':
+
+  digitalWrite(LIGHT,LOW); 
+
+
+   Serial.println("LIGHT OFF");
+        break;
+  default:
+  break;
+  }}
+   
+  
+  
+
+}
