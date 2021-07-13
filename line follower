@@ -1,0 +1,47 @@
+c o n s t i n t motorA1 = 2;
+c o n s t i n t motorA2 = 4;
+c o n s t i n t motorB1 = 9;
+c o n s t i n t motorB2 = 1 2;
+v oi d s e t u p ( )
+{
+pinMode ( 6 , INPUT ) ;
+pinMode ( 7 , INPUT ) ;
+pinMode ( motorA1 , OUTPUT ) ;
+pinMode ( motorA2 , OUTPUT ) ;
+pinMode ( motorB1 , OUTPUT ) ;
+pinMode ( motorB2 , OUTPUT ) ;
+}
+v oi d l o o p ( )
+{
+i n t v al u e 1 = d i g i t a l R e a d ( 6 ) ;
+i n t v al u e 1 = d i g i t a l R e a d ( 7 ) ;
+v al u e 1 =HIGH ;
+
+
+v al u e 2 =LOW;
+i f ( v a l u e ==LOW && v al u e 2 ==LOW)
+{
+d i g t a l W r i t e ( motorA2 , HIGH ) ;
+d i g t a l W r i t e ( motorA1 ,LOW) ;
+d i g t a l W r i t e ( motorB1 ,LOW) ;
+d i g t a l W r i t e ( motorB2 , HIGH ) ;
+}
+i f ( v a l u e ==LOW && v al u e 2 ==HIGH ) ;
+d i g t a l W r i t e ( motorA2 ,LOW) ;
+d i g t a l W r i t e ( motorA1 ,LOW) ;
+d i g t a l W r i t e ( motorB1 ,LOW) ;
+d i g t a l W r i t e ( motorB2 , HIGH ) ;
+}
+i f ( v a l u e ==HIGH && v al u e 2 ==LOW)
+{
+d i g t a l W r i t e ( motorA2 , HIGH ) ;
+d i g t a l W r i t e ( motorA1 ,LOW) ;
+d i g t a l W r i t e ( motorB1 ,LOW) ;
+d i g t a l W r i t e ( motorB2 , HIGH ) ;
+}
+i f ( v a l u e ==HIGH && v al u e 2 ==HIGH )
+{
+d i g t a l W r i t e ( motorA2 ,LOW) ;
+d i g t a l W r i t e ( motorA1 , HIGH ) ;
+d i g t a l W r i t e ( motorB1 , HIGH ) ;
+d i g t a l W r i t e ( motorB2 ,LOW) ;
