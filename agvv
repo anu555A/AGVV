@@ -1,0 +1,156 @@
+#include <LiquidCrystal.h> #include <Servo.h>  
+ 
+const int rs = 12, en = 13, d4 = A1, d5 = A2, d6 = A3, d7 = A4; LiquidCrystal lcd(rs, en, d4, d5, d6, d7); 
+ 
+int servoPin1 = 3;  int servoPin2 = 9;  Servo Servo1; Servo Servo2;   
+ 
+ 
+const int  MRH=4; const int  MRL=5; 
+ 
+const int MLH=6; const int MLL=7; 
+ 
+ 
+ 
+ 
+int auto_mode=0; 
+ 
+ 
+const int ack_button=2; const int right_proximty=11; const int left_proximty=10; const int sense_proximity=8; 
+ 
+float tempc;  float tempout;  
+ 
+int box1=0; int box2=0; 
+ 
+ 
+void setup() {      Serial.begin(9600);     delay(100); 
+   Servo1.attach(servoPin1);  Servo2.attach(servoPin2); 
+ 
+ 
+pinMode(MRH,OUTPUT); pinMode(MRL,OUTPUT); 
+ 
+pinMode(MLH,OUTPUT); pinMode(MLL,OUTPUT); 
+ 
+ 
+ 
+ 
+  pinMode(ack_button,INPUT_PULLUP);   pinMode(right_proximty,INPUT);   pinMode(left_proximty,INPUT);   pinMode(sense_proximity,INPUT); 
+ 
+      lcd.begin(16, 2);   lcd.print("Initializing...."); delay(2000); 
+ 
+ lcd.clear();          lcd.setCursor(0,0);         lcd.print("Waiting for ");          lcd.setCursor(0, 1);                       lcd.print("Command");                        delay(1000); 
+ 
+ 
+ 
+} 
+ 
+void loop() { 
+ 
+ 
+if(auto_mode==1) 
+ {   if(digitalRead(right_proximty)==HIGH && digitalRead(left_proximty)==HIGH)      {              go_forward();      }      else if(digitalRead(right_proximty)==HIGH && digitalRead(left_proximty)==LOW) 
+ 
+     {              go_right();      }        else if(digitalRead(right_proximty)==LOW && digitalRead(left_proximty)==HIGH) 
+ 
+  { 
+ 
+         go_left();   } 
+ 
+else if(digitalRead(right_proximty)==LOW && digitalRead(left_proximty)==LOW) 
+ 
+   { 
+ 
+       go_stop();         } 
+ 
+       else        {                  go_stop();        }  } 
+ 
+ 
+ 
+if(digitalRead(sense_proximity)==HIGH ) {   go_stop();   delay(2000); 
+  auto_mode=0;   if(box1==1)   {     Servo1.write(60);         } 
+ 
+  if(box2==1)   {     Servo2.write(10);         }   lcd.begin(16, 2);     lcd.clear();          lcd.setCursor(0,0);         lcd.print("Touch Temp:Sensor");          lcd.setCursor(0, 1);                       lcd.print("and press Button");                        delay(1000); 
+ 
+      measure_temeprature();      
+ 
+           if(digitalRead(ack_button)==LOW)            { 
+ 
+            if(box1==1)   {     Servo1.write(10);     box1=0;     box2=1;         } 
+ 
+  if(box2==1)   {     Servo2.write(60);     box2=0;      box1=0;      
+  }              auto_mode=1;              go_forward();              delay(2500);            } }    
+ 
+  if (Serial.available() > 0)   {     int inByte = Serial.read();      
+ 
+    switch (inByte) {       case 'D':                Servo1.write(60);       delay(1000);       Servo2.write(10);                            break; 
+ 
+        case 'U':               Servo1.write(10);       delay(1000);       Servo2.write(60);       delay(1000);                            break; 
+ 
+ 
+        case 'A':              auto_mode=1;      delay(100);     lcd.begin(16, 2);  lcd.clear();          lcd.setCursor(0,0);         lcd.print("Command Recieved"); 
+                          break; 
+ 
+ 
+ 
+            case 'S':          
+ 
+digitalWrite(MRH,LOW); digitalWrite(MRL,LOW); 
+ 
+digitalWrite(MLH,LOW); digitalWrite(MLL,LOW); auto_mode=0; 
+ 
+ 
+ 
+ 
+        break; 
+ 
+        case 'F':          digitalWrite(MRH,HIGH); digitalWrite(MRL,LOW); 
+ 
+digitalWrite(MLH,HIGH); digitalWrite(MLL,LOW);         break; 
+ 
+ 
+        case 'B': digitalWrite(MRH,LOW); digitalWrite(MRL,HIGH); 
+ 
+digitalWrite(MLH,LOW); digitalWrite(MLL,HIGH);         break; 
+ 
+        case 'R':  digitalWrite(MRH,LOW); 
+digitalWrite(MRL,HIGH); 
+ 
+digitalWrite(MLH,HIGH); digitalWrite(MLL,LOW);         break; 
+ 
+ 
+             case 'L':  digitalWrite(MRH,HIGH); digitalWrite(MRL,LOW); 
+ 
+digitalWrite(MLH,LOW); digitalWrite(MLL,HIGH);         break; 
+ 
+               
+ 
+              default:              delay(100);     }   } 
+ 
+} 
+ 
+ 
+void go_forward() {       digitalWrite(MRH,HIGH);       digitalWrite(MRL,LOW); 
+ 
+      digitalWrite(MLH,HIGH);       digitalWrite(MLL,LOW); } 
+ 
+void go_backward() {       digitalWrite(MRH,LOW);       digitalWrite(MRL,HIGH); 
+ 
+      digitalWrite(MLH,LOW);       digitalWrite(MLL,HIGH); } 
+ 
+void go_right() {       digitalWrite(MRH,HIGH);       digitalWrite(MRL,LOW); 
+ 
+      digitalWrite(MLH,LOW);       digitalWrite(MLL,HIGH); } 
+ 
+void go_left() {       digitalWrite(MRH,LOW);       digitalWrite(MRL,HIGH); 
+ 
+      digitalWrite(MLH,HIGH);       digitalWrite(MLL,LOW); } 
+ 
+void go_stop() {       digitalWrite(MRH,LOW);       digitalWrite(MRL,LOW); 
+ 
+      digitalWrite(MLH,LOW);       digitalWrite(MLL,LOW); } 
+ 
+void measure_temeprature() { 
+ 
+tempout=analogRead(A0); tempout=(tempout*500)/1023; tempc=tempout; lcd.begin(16, 2);  lcd.clear();          lcd.setCursor(0,0);         lcd.print("Body Temperature");          lcd.setCursor(0, 1); 
+                      lcd.print(tempc);            Serial.println(tempc);             delay(1000); 
+ 
+} 
